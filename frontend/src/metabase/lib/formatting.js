@@ -306,20 +306,20 @@ export function formatEmail(
 
 // based on https://github.com/angular/angular.js/blob/v1.6.3/src/ng/directive/input.js#L25
 const URL_WHITELIST_REGEX = /^(https?|mailto):\/*(?:[^:@]+(?::[^@]+)?@)?(?:[^\s:/?#]+|\[[a-f\d:]+])(?::\d+)?(?:\/[^?#]*)?(?:\?[^#]*)?(?:#.*)?$/i;
-// const IMG_URL_WHITELIST_REGEX = //i;
+const IMG_URL_WHITELIST_REGEX = /^http.+(png|jpeg|gif|jpg|svg)$/i;
 
 export function formatUrl(value: Value, { jsx, rich }: FormattingOptions = {}) {
   const url = String(value);
-  if (jsx && rich && URL_WHITELIST_REGEX.test(url)) {
-    // return (
-    //   <ExternalLink className="link link--wrappable" href={url}>
-    //     {url}
-    //   </ExternalLink>
-    // );
-  // } else if (jsx && rich && IMG_URL_WHITELIST_REGEX.test(url)) {
+  if (jsx && rich && IMG_URL_WHITELIST_REGEX.test(url)) {
     return (
       <ImageHolder heightVal={30} src={url}></ImageHolder>
     );
+  } else if (jsx && rich && URL_WHITELIST_REGEX.test(url)) {
+      return (
+        <ExternalLink className="link link--wrappable" href={url}>
+          {url}
+        </ExternalLink>
+      );
   } else {
     return url;
   }
