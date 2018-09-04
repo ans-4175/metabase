@@ -315,11 +315,11 @@ export function formatUrl(value: Value, { jsx, rich }: FormattingOptions = {}) {
       <ImageHolder heightVal={30} src={url}></ImageHolder>
     );
   } else if (jsx && rich && URL_WHITELIST_REGEX.test(url)) {
-      return (
-        <ExternalLink className="link link--wrappable" href={url}>
-          {url}
-        </ExternalLink>
-      );
+    return (
+      <ExternalLink className="link link--wrappable" href={url}>
+        {url}
+      </ExternalLink>
+    );
   } else {
     return url;
   }
