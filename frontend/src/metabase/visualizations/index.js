@@ -12,6 +12,7 @@ import AreaChart from "./visualizations/AreaChart.jsx";
 import MapViz from "./visualizations/Map.jsx";
 import ScatterPlot from "./visualizations/ScatterPlot.jsx";
 import Funnel from "./visualizations/Funnel.jsx";
+import ImageCarousel from "./visualizations/ImageCarousel.jsx";
 import ObjectDetail from "./visualizations/ObjectDetail.jsx";
 import { t } from "c-3po";
 import _ from "underscore";
@@ -123,15 +124,16 @@ const extractRemappedColumns = data => {
 };
 
 registerVisualization(Scalar);
-registerVisualization(Progress);
+registerVisualization(ImageCarousel);
 registerVisualization(Table);
 registerVisualization(Text);
+registerVisualization(PieChart);
 registerVisualization(LineChart);
 registerVisualization(AreaChart);
 registerVisualization(BarChart);
 registerVisualization(RowChart);
+registerVisualization(Progress);
 registerVisualization(ScatterPlot);
-registerVisualization(PieChart);
 registerVisualization(MapViz);
 registerVisualization(Funnel);
 registerVisualization(ObjectDetail);
