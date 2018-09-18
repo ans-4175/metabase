@@ -9137,12 +9137,6 @@ react-draggable@^2.2.3:
     classnames "^2.2.5"
     prop-types "^15.6.0"
 
-react-easy-swipe@^0.0.16:
-  version "0.0.16"
-  resolved "https://registry.yarnpkg.com/react-easy-swipe/-/react-easy-swipe-0.0.16.tgz#5a3d949a8f975d05be92a818254315d1318a81ea"
-  dependencies:
-    prop-types "^15.5.8"
-
 react-element-to-jsx-string@^13.1.0:
   version "13.1.0"
   resolved "https://registry.yarnpkg.com/react-element-to-jsx-string/-/react-element-to-jsx-string-13.1.0.tgz#a8dbd1a2aeec7ab58f380644f6b5e7e8c7c79c8f"
@@ -9217,14 +9211,6 @@ react-resizable@^1.0.1:
   dependencies:
     prop-types "15.x"
     react-draggable "^2.2.6 || ^3.0.3"
-
-react-responsive-carousel@^3.1.41:
-  version "3.1.41"
-  resolved "https://registry.yarnpkg.com/react-responsive-carousel/-/react-responsive-carousel-3.1.41.tgz#b100f192ae7b147bf87eb17942ac5738cfd146fb"
-  dependencies:
-    classnames "^2.2.5"
-    prop-types "^15.5.8"
-    react-easy-swipe "^0.0.16"
 
 react-retina-image@^2.0.5:
   version "2.0.5"

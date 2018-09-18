@@ -1,7 +1,7 @@
 /* @flow */
 
 import React, { Component } from "react";
-// import styles from "./Scalar.css";
+import styles from "./ImageCarousel.css";
 import { t } from "c-3po";
 import Icon from "metabase/components/Icon.jsx";
 import Tooltip from "metabase/components/Tooltip.jsx";
@@ -211,7 +211,11 @@ export default class ImageCarousel extends Component {
     ]
 
     return (
-        <ImageGallery items={images} />
+        <ImageGallery
+          items={images}
+          lazyLoad={true}
+          additionalClass="image-gallery"
+        />
     );
   }
 }
