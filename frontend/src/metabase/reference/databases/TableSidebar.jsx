@@ -44,12 +44,12 @@ const TableSidebar = ({ database, table, style, className }) => (
         icon="all"
         name={t`Questions about this table`}
       />
-      <SidebarItem
+      {/* <SidebarItem
         key={`/auto/dashboard/table/${table.id}`}
         href={`/auto/dashboard/table/${table.id}`}
         icon="bolt"
         name={t`X-ray this table`}
-      />
+      /> */}
     </ol>
   </div>
 );
