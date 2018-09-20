@@ -314,7 +314,7 @@ export default class TableInteractive extends Component {
       getCellBackgroundColor &&
       getCellBackgroundColor(value, rowIndex, column.name);
 
-    return (
+      return (
       <div
         key={key}
         style={{
