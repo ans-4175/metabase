@@ -24,6 +24,10 @@ export default class ImageCarousel extends Component {
 
   _carousel: ?HTMLElement;
 
+  static isSensible(cols, rows) {
+    return rows.length && cols.length;
+  }
+
   static settings = {
     "graph.series":{
       title: `Image Columns`,
