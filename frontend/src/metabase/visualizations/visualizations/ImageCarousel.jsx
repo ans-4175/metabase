@@ -15,7 +15,7 @@ export default class ImageCarousel extends Component {
 
   static uiName = "Carousel";
   static identifier = "carousel";
-  static iconName = "number";
+  static iconName = "unknown";
 
   static noHeader = true;
   static supportsSeries = true;
