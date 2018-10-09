@@ -125,10 +125,10 @@ const extractRemappedColumns = data => {
 };
 
 registerVisualization(Scalar);
-registerVisualization(ImageCarousel);
 registerVisualization(Progress);
 registerVisualization(Gauge);
 registerVisualization(Table);
+registerVisualization(ImageCarousel);
 registerVisualization(Text);
 registerVisualization(LineChart);
 registerVisualization(AreaChart);

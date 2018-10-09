@@ -2,25 +2,22 @@
 
 import React, { Component } from "react";
 import styles from "./ImageCarousel.css";
-import { t } from "c-3po";
-import Icon from "metabase/components/Icon.jsx";
-import Tooltip from "metabase/components/Tooltip.jsx";
-import Ellipsified from "metabase/components/Ellipsified.jsx";
 import ImageGallery from 'react-image-gallery';
 
-import { formatValue } from "metabase/lib/formatting";
-import { TYPE } from "metabase/lib/types";
-import { isNumber } from "metabase/lib/schema_metadata";
+import {
+  getDefaultColumns,
+  getOptionFromColumn,
+} from "metabase/visualizations/lib/settings";
 
-import cx from "classnames";
-import d3 from "d3";
+import {
+  ChartSettingsError,
+} from "metabase/visualizations/lib/errors";
 
 import type { VisualizationProps } from "metabase/meta/types/Visualization";
 
 export default class ImageCarousel extends Component {
   props: VisualizationProps;
 
-//   static uiName = t`Number`;
   static uiName = "Carousel";
   static identifier = "carousel";
   static iconName = "number";
@@ -37,184 +34,57 @@ export default class ImageCarousel extends Component {
   }
 
   static checkRenderable([{ data: { cols, rows } }]) {
-    // scalar can always be rendered, nothing needed here
-  }
-
-//   static seriesAreCompatible(initialSeries, newSeries) {
-//     if (newSeries.data.cols && newSeries.data.cols.length === 1) {
-//       return true;
-//     }
-//     return false;
-//   }
-
-  static transformSeries(series) {
-    if (series.length > 1) {
-      return series.map((s, seriesIndex) => ({
-        card: {
-          ...s.card,
-          display: "funnel",
-          visualization_settings: {
-            ...s.card.visualization_settings,
-            "graph.x_axis.labels_enabled": false,
-          },
-          _seriesIndex: seriesIndex,
-        },
-        data: {
-          cols: [
-            { base_type: TYPE.Text, display_name: t`Name`, name: "name" },
-            { ...s.data.cols[0] },
-          ],
-          rows: [[s.card.name, s.data.rows[0][0]]],
-        },
-      }));
-    } else {
-      return series;
-    }
+    // NOTE: image carousel validation for rendering postponed due my incompetent understanding yet
   }
 
   static settings = {
-    "scalar.locale": {
-      title: t`Separator style`,
-      widget: "select",
-      props: {
-        options: [
-          { name: "100000.00", value: null },
-          { name: "100,000.00", value: "en" },
-          { name: "100 000,00", value: "fr" },
-          { name: "100.000,00", value: "de" },
-        ],
+    "graph.series":{
+      title: `Image Columns`,
+      widget: "fields",
+      getDefault: (series, vizSettings) => getDefaultColumns(series).metrics,
+      persistDefault: true,
+      getProps: ([{ card, data }], vizSettings) => {
+        const options = data.cols.map(getOptionFromColumn);
+        return {
+          options,
+          addAnother: null
+        };
       },
-      default: "en",
-    },
-    "scalar.decimals": {
-      title: t`Number of decimal places`,
-      widget: "number",
-    },
-    "scalar.prefix": {
-      title: t`Add a prefix`,
-      widget: "input",
-    },
-    "scalar.suffix": {
-      title: t`Add a suffix`,
-      widget: "input",
-    },
-    "scalar.scale": {
-      title: t`Multiply by a number`,
-      widget: "number",
-    },
+      dashboard: false,
+      useRawSeries: true,
+    }
   };
 
   render() {
     let {
-      series: [{ card, data: { cols, rows } }],
-      className,
-      actionButtons,
-      gridSize,
+      series: [{ data: { cols, rows } }],
       settings,
-      onChangeCardAndRun,
-      visualizationIsClickable,
-      onVisualizationClick,
     } = this.props;
-    let description = settings["card.description"];
 
-    let isSmall = gridSize && gridSize.width < 4;
-    const column = cols[0];
-    console.log('column', column);
-
-    let scalarValue = rows[0] && rows[0][0];
-    if (scalarValue == null) {
-      scalarValue = "";
-    }
-    console.log('scalarValue', scalarValue);
-
-    let compactScalarValue, fullScalarValue;
-
-    // TODO: some or all of these options should be part of formatValue
-    if (typeof scalarValue === "number" && isNumber(column)) {
-      // scale
-      const scale = parseFloat(settings["scalar.scale"]);
-      if (!isNaN(scale)) {
-        scalarValue *= scale;
+    let colContent = null;
+    cols.forEach((el, idx) => {
+      if (el.name === settings["graph.series"][0]) {
+        colContent = idx;
       }
-
-      const localeStringOptions = {};
-
-      // decimals
-      let decimals = parseFloat(settings["scalar.decimals"]);
-      if (!isNaN(decimals)) {
-        scalarValue = d3.round(scalarValue, decimals);
-        localeStringOptions.minimumFractionDigits = decimals;
+    });
+    
+    const colSelected = (!colContent) ? 0 : colContent;
+    const images = rows.map(row => {
+      return {
+        original: row[colSelected],
+        thumbnail: row[colSelected],
+        sizes: "80vw"
       }
-
-      let number = scalarValue;
-
-      // currency
-      if (settings["scalar.currency"] != null) {
-        localeStringOptions.style = "currency";
-        localeStringOptions.currency = settings["scalar.currency"];
-      }
-
-      try {
-        // format with separators and correct number of decimals
-        if (settings["scalar.locale"]) {
-          number = number.toLocaleString(
-            settings["scalar.locale"],
-            localeStringOptions,
-          );
-        } else {
-          // HACK: no locales that don't thousands separators?
-          number = number
-            .toLocaleString("en", localeStringOptions)
-            .replace(/,/g, "");
-        }
-      } catch (e) {
-        console.warn("error formatting scalar", e);
-      }
-      fullScalarValue = formatValue(number, { column: column });
-    } else {
-      fullScalarValue = formatValue(scalarValue, { column: column });
-    }
-
-    compactScalarValue = isSmall
-      ? formatValue(scalarValue, { column: column, compact: true })
-      : fullScalarValue;
-
-    if (settings["scalar.prefix"]) {
-      compactScalarValue = settings["scalar.prefix"] + compactScalarValue;
-      fullScalarValue = settings["scalar.prefix"] + fullScalarValue;
-    }
-    if (settings["scalar.suffix"]) {
-      compactScalarValue = compactScalarValue + settings["scalar.suffix"];
-      fullScalarValue = fullScalarValue + settings["scalar.suffix"];
-    }
-
-    const clicked = {
-      value: rows[0] && rows[0][0],
-      column: cols[0],
-    };
-    // const isClickable = visualizationIsClickable(clicked);
-    const isClickable = false;
-
-    const images = [
-      {
-        original: 'http://bizarrelove.yolasite.com/resources/Kiro--large-msg-121114094568[1].jpg',
-        thumbnail: 'http://bizarrelove.yolasite.com/resources/Kiro--large-msg-121114094568[1].jpg',
-      },
-      {
-        original: 'https://wow.olympus.eu/webfile/img/1632/x=1024/oly_testwow_stage.jpg',
-        thumbnail: 'https://wow.olympus.eu/webfile/img/1632/x=1024/oly_testwow_stage.jpg'
-      },
-      {
-        original: 'https://images.fireside.fm/podcasts/images/b/bc7f1faf-8aad-4135-bb12-83a8af679756/cover_medium.jpg',
-        thumbnail: 'https://images.fireside.fm/podcasts/images/b/bc7f1faf-8aad-4135-bb12-83a8af679756/cover_medium.jpg'
-      }
-    ]
-
+    });
+  
     return (
         <ImageGallery
           items={images}
           lazyLoad={true}
           additionalClass="image-gallery"
+          showThumbnails={false}
+          showFullscreenButton={false}
+          showPlayButton={false}
         />
     );
   }
