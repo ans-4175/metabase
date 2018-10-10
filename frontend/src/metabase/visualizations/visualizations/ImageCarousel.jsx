@@ -61,18 +61,16 @@ export default class ImageCarousel extends Component {
       settings,
     } = this.props;
 
-    let colContent = null;
+    let colContent = 0;
     cols.forEach((el, idx) => {
       if (el.name === settings["graph.series"][0]) {
         colContent = idx;
       }
     });
-    
-    const colSelected = (!colContent) ? 0 : colContent;
     const images = rows.map(row => {
       return {
-        original: row[colSelected],
-        thumbnail: row[colSelected],
+        original: row[colContent],
+        thumbnail: row[colContent],
         sizes: "80vw"
       }
     });
@@ -83,7 +81,7 @@ export default class ImageCarousel extends Component {
           lazyLoad={true}
           additionalClass="image-gallery"
           showThumbnails={false}
-          showFullscreenButton={false}
+          showFullscreenButton={true}
           showPlayButton={false}
         />
     );

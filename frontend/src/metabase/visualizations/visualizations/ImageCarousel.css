@@ -133,9 +133,9 @@
 .image-gallery-fullscreen-button {
   right: 0; }
   .image-gallery-fullscreen-button::before {
-    content: ""; }
+    content: "\2610"; }
   .image-gallery-fullscreen-button.active::before {
-    content: ""; }
+    content: "\2612"; }
   .image-gallery-fullscreen-button.active:hover::before {
     transform: scale(0.9); }
 
@@ -172,12 +172,12 @@
 .image-gallery-left-nav {
   left: 0; }
   .image-gallery-left-nav::before {
-    content: ""; }
+    content: "\21DC"; }
 
 .image-gallery-right-nav {
   right: 0; }
   .image-gallery-right-nav::before {
-    content: ""; }
+    content: "\21DD"; }
 
 .image-gallery-slides {
   line-height: 0;
