@@ -133,9 +133,9 @@
 .image-gallery-fullscreen-button {
   right: 0; }
   .image-gallery-fullscreen-button::before {
-    content: "\2610"; }
+    content: "\2927"; }
   .image-gallery-fullscreen-button.active::before {
-    content: "\2612"; }
+    content: "\2929"; }
   .image-gallery-fullscreen-button.active:hover::before {
     transform: scale(0.9); }
 
