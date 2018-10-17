@@ -5,7 +5,7 @@ set -e
 BASEDIR=$(dirname $0)
 PROJECT_ROOT="$BASEDIR/../.."
 
-DOCKERHUB_NAMESPACE=ans4175
+DOCKERHUB_NAMESPACE=asia.gcr.io/sale-stock-indonesia
 
 
 BUILD_TYPE=$1
