@@ -5,7 +5,7 @@ set -e
 BASEDIR=$(dirname $0)
 PROJECT_ROOT="$BASEDIR/../.."
 
-DOCKERHUB_NAMESPACE=metabase
+DOCKERHUB_NAMESPACE=ans4175
 
 
 BUILD_TYPE=$1
@@ -20,11 +20,16 @@ if [ -z $MB_TAG ]; then
     exit 1
 fi
 
-if [ "$3" == "--publish" ]; then
+BUILD="YES"
+if [ "$3" == "--no-build" ]; then
+   BUILD="NO"
+fi
+
+if [ "$4" == "--publish" ]; then
     PUBLISH="YES"
 fi
 
-if [ "$4" == "--latest" ]; then
+if [ "$5" == "--latest" ]; then
     LATEST="YES"
 fi
 
@@ -50,13 +55,15 @@ if [ "$BUILD_TYPE" == "release" ]; then
         exit 1
     fi
 else
-    DOCKERHUB_REPOSITORY=metabase-head
+    DOCKERHUB_REPOSITORY=metabase-ss
     DOCKER_IMAGE="${DOCKERHUB_NAMESPACE}/${DOCKERHUB_REPOSITORY}:${MB_TAG}"
 
     echo "Building Docker image ${DOCKER_IMAGE} from local source"
 
-    # trigger a full build
-    ${PROJECT_ROOT}/bin/build
+    if [ "$BUILD" == "YES" ]; then
+   	 # trigger a full build
+   	 ${PROJECT_ROOT}/bin/build no-translations
+    fi
 
     if [ $? -eq 1 ]; then
         echo "Build failed!"
@@ -79,19 +86,19 @@ if [ "$PUBLISH" == "YES" ]; then
     echo "Publishing image ${DOCKER_IMAGE} to Dockerhub"
 
     # make sure that we are logged into dockerhub
-    docker login --username="${DOCKERHUB_USERNAME}" --password="${DOCKERHUB_PASSWORD}"
+    sudo docker login --username="${DOCKERHUB_USERNAME}" --password="${DOCKERHUB_PASSWORD}"
 
     # push the built image to dockerhub
-    docker push ${DOCKER_IMAGE}
+    sudo docker push ${DOCKER_IMAGE}
 
     # TODO: quick check against dockerhub to see that our new image made it
 
     if [ "$LATEST" == "YES" ]; then
         # tag our recent versioned image as "latest"
-        docker tag -f ${DOCKER_IMAGE} ${DOCKERHUB_NAMESPACE}/${DOCKERHUB_REPOSITORY}:latest
+        sudo docker tag ${DOCKER_IMAGE} ${DOCKERHUB_NAMESPACE}/${DOCKERHUB_REPOSITORY}:latest
 
         # then push it as well
-        docker push ${DOCKERHUB_NAMESPACE}/${DOCKERHUB_REPOSITORY}:latest
+        sudo docker push ${DOCKERHUB_NAMESPACE}/${DOCKERHUB_REPOSITORY}:latest
 
         # TODO: validate push succeeded
     fi
