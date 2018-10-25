@@ -536,9 +536,9 @@
                        {sql :query, params :params, :keys [table-name mbql?]} :native
                        :as                                                    outer-query}]
   (binding [*bigquery-timezone* (effective-query-timezone database)]
-    (let [sql     (str "-- " (qputil/query->remark outer-query) "\n" (if (seq params)
-                                                                       (unprepare/unprepare (cons sql params))
-                                                                       sql))
+    (let [sql     (if (seq params)
+                    (unprepare/unprepare (cons sql params))
+                    sql)
           results (process-native* database sql)
           results (if mbql?
                     (post-process-mbql table-name results)
